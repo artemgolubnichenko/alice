@@ -1,5 +1,7 @@
 package com.issart.alice.exchange.type;
 
+import java.math.BigDecimal;
+
 public class ExchangeInfo {
 
     private float current;
@@ -11,7 +13,7 @@ public class ExchangeInfo {
     }
 
     public float getCurrent() {
-        return current;
+        return round(current);
     }
 
     public void setCurrent(float current) {
@@ -19,7 +21,7 @@ public class ExchangeInfo {
     }
 
     public float getPrev() {
-        return prev;
+        return round(prev);
     }
 
     public void setPrev(float prev) {
@@ -27,6 +29,10 @@ public class ExchangeInfo {
     }
 
     public float getDiff() {
-        return current-prev;
+        return round(current-prev);
+    }
+
+    private float round(float value) {
+        return new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
     }
 }
