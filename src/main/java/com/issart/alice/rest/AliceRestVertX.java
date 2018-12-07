@@ -44,7 +44,7 @@ public class AliceRestVertX extends AbstractVerticle {
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
         router.post("/rest/wiffy").handler(this::handleWiffyRequest);
-        router.post("/rest/exchange").handler(this::handleWiffyRequest);
+        router.post("/rest/exchange").handler(this::handleExchangeRequest);
 
         vertx.createHttpServer().requestHandler(router::accept).listen(
             Integer.valueOf(RESOURCE_BUNDLE.getString("server.port"))

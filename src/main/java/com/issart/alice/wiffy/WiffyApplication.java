@@ -4,8 +4,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import com.google.inject.Inject;
+import com.issart.alice.common.Application;
 import com.issart.alice.rest.dto.request.AliceRequest;
-import com.issart.alice.rest.dto.response.AliceReplicas;
+import com.issart.alice.wiffy.rest.dto.response.AliceReplicas;
 import com.issart.alice.rest.dto.response.AliceResponse;
 import com.issart.alice.rest.dto.response.Response;
 import com.issart.alice.wiffy.service.IWiffyService;
@@ -13,7 +14,7 @@ import com.issart.alice.wiffy.service.WiffyCommand;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-public class WiffyApplication {
+public class WiffyApplication extends Application {
 
     @Inject
     private IWiffyService wiffyService;
@@ -22,10 +23,8 @@ public class WiffyApplication {
     private final String DEVICE_NAME = "wifi";
     private final static Logger LOGGER = Logger.getLogger(WiffyApplication.class);
 
-    public AliceResponse handleAliceRequest(AliceRequest request) {
-        boolean newSession = request.getSession().getNew();
-        String rawCommand = request.getRequest().getCommand();
-
+    @Override
+    protected AliceResponse processRequest(AliceRequest request) {
         AliceResponse response = new AliceResponse();
         if(newSession && (rawCommand.isEmpty()
             || request.getRequest().getNlu().getEntities().isEmpty())) {
@@ -48,10 +47,6 @@ public class WiffyApplication {
                 }
             }
         }
-        response.setSession(request.getSession());
-        response.getSession().setNew(null);
-        response.getSession().setSkillId(null);
-        response.setVersion(request.getVersion());
         return response;
     }
 
