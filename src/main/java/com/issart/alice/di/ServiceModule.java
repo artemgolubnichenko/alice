@@ -1,4 +1,4 @@
-package com.issart.alice.wiffy.di;
+package com.issart.alice.di;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
