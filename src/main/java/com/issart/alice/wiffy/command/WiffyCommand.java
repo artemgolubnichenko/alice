@@ -1,4 +1,4 @@
-package com.issart.alice.wiffy.service;
+package com.issart.alice.wiffy.command;
 
 import java.util.Arrays;
 import java.util.HashSet;

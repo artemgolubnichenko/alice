@@ -4,12 +4,10 @@ public class ExchangeInfo {
 
     private float current;
     private float prev;
-    private float diff;
 
-    public ExchangeInfo(float current, float prev, float diff) {
+    public ExchangeInfo(float current, float prev) {
         this.current = current;
         this.prev = prev;
-        this.diff = diff;
     }
 
     public float getCurrent() {
@@ -29,10 +27,6 @@ public class ExchangeInfo {
     }
 
     public float getDiff() {
-        return diff;
-    }
-
-    public void setDiff(float diff) {
-        this.diff = diff;
+        return current-prev;
     }
 }

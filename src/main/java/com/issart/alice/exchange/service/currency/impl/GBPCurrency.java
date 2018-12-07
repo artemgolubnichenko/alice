@@ -1,13 +1,11 @@
 package com.issart.alice.exchange.service.currency.impl;
 
-import com.issart.alice.exchange.service.currency.ICurrency;
 import com.issart.alice.exchange.type.Currency;
-import com.issart.alice.exchange.type.ExchangeInfo;
 
-public class GBPCurrency implements ICurrency {
+public class GBPCurrency extends BaseCurrency {
 
     @Override
-    public ExchangeInfo getCurrency(Currency currency) {
-        return null;
+    public Currency getCurrencyCode() {
+        return Currency.GBP;
     }
 }

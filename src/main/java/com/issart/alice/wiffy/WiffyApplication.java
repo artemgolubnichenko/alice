@@ -10,7 +10,7 @@ import com.issart.alice.wiffy.rest.dto.response.AliceReplicas;
 import com.issart.alice.rest.dto.response.AliceResponse;
 import com.issart.alice.rest.dto.response.Response;
 import com.issart.alice.wiffy.service.IWiffyService;
-import com.issart.alice.wiffy.service.WiffyCommand;
+import com.issart.alice.wiffy.command.WiffyCommand;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
