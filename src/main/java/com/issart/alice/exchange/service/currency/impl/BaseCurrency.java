@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import com.issart.alice.exchange.service.currency.ICurrency;
 import com.issart.alice.exchange.service.currency.rest.dto.response.CurrencyResponse;
@@ -20,14 +22,21 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 public abstract class BaseCurrency implements ICurrency {
 
     protected Map<Currency, ExchangeInfo> currencyInfoMap = new HashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     public static final String RESOURCE_URL = "https://www.cbr-xml-daily.ru/daily_json.js";
     private final static Logger LOGGER = Logger.getLogger(BaseCurrency.class);
 
     public BaseCurrency() {
-        pull();
+        scheduler.scheduleAtFixedRate(() -> {
+            pull();
+            LOGGER.info("Pulling for currencies..");
+        }, 0, 30, MINUTES);
     }
 
     @Override
