@@ -1,10 +1,13 @@
-package com.issart.alice.wiffy.rest;
+package com.issart.alice.rest;
 
+import java.util.ResourceBundle;
 import javax.sql.DataSource;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.issart.alice.di.PersistenceModule;
 import com.issart.alice.di.ServiceModule;
+import com.issart.alice.util.Runner;
+import com.issart.alice.wiffy.rest.WiffyApplication;
 import com.issart.alice.wiffy.rest.dto.request.AliceRequest;
 import com.issart.alice.wiffy.rest.dto.response.AliceResponse;
 import io.vertx.core.AbstractVerticle;
@@ -20,6 +23,7 @@ import org.sql2o.Sql2o;
 public class AliceRestVertX extends AbstractVerticle {
 
     private WiffyApplication wiffyApplication;
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("config");;
     private final static Logger LOGGER = Logger.getLogger(AliceRestVertX.class);
 
     public static void main(String[] args) {
@@ -37,7 +41,9 @@ public class AliceRestVertX extends AbstractVerticle {
         router.route().handler(BodyHandler.create());
         router.post("/rest/wiffy").handler(this::handleWiffyRequest);
 
-        vertx.createHttpServer().requestHandler(router::accept).listen(8095);
+        vertx.createHttpServer().requestHandler(router::accept).listen(
+            Integer.valueOf(RESOURCE_BUNDLE.getString("server.port"))
+        );
     }
 
     public void handleWiffyRequest(RoutingContext routingContext) {

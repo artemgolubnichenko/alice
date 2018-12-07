@@ -18,8 +18,8 @@ public class WiffyApplication {
     @Inject
     private IWiffyService wiffyService;
 
-    private Set<String> queue = Collections.synchronizedSet(new HashSet<>());
-
+    private Set<String> usersQueue = Collections.synchronizedSet(new HashSet<>());
+    private final String DEVICE_NAME = "wifi";
     private final static Logger LOGGER = Logger.getLogger(WiffyApplication.class);
 
     public AliceResponse handleAliceRequest(AliceRequest request) {
@@ -35,32 +35,16 @@ public class WiffyApplication {
             String userId = request.getSession().getUserId();
             switch (command) {
                 case GET_PASSWORD: {
-                    String password = wiffyService.getPassword(userId, "wifi");
-                    if (StringUtils.isNotEmpty(password)) {
-                        response.setResponse(new Response(password));
-                        response.getResponse().setEndSession(true);
-                    } else {
-                        response.setResponse(new Response(AliceReplicas.PASSWORD_NOT_SET_MSG));
-                        response.getResponse().setEndSession(true);
-                    }
+                    response = handleGetPasswordCommand(userId);
                     break;
                 }
                 case SET_PASSWORD: {
-                    queue.add(userId);
-                    response.setResponse(new Response(AliceReplicas.PASSWORD_SET_MSG));
-                    response.getResponse().setEndSession(false);
+                    response = handleSetPasswordCommand(userId);
                     break;
                 }
                 case UNKNOWN: {
-                    if(queue.contains(userId)) {
-                        queue.remove(userId);
-                        wiffyService.addOrUpdatePassword(userId, "wifi", rawCommand);
-                        response.setResponse(new Response(AliceReplicas.PASSWORD_SUCCESSFULLY_SET_MSG));
-                        response.getResponse().setEndSession(true);
-                    } else {
-                        response.setResponse(new Response(AliceReplicas.INITIAL_MSG));
-                        response.getResponse().setEndSession(true);
-                    }
+                    response = handleUnknownCommand(userId, rawCommand);
+                    break;
                 }
             }
         }
@@ -68,6 +52,41 @@ public class WiffyApplication {
         response.getSession().setNew(null);
         response.getSession().setSkillId(null);
         response.setVersion(request.getVersion());
+        return response;
+    }
+
+    private AliceResponse handleGetPasswordCommand(String userId) {
+        AliceResponse response = new AliceResponse();
+        String password = wiffyService.getPassword(userId, DEVICE_NAME);
+        if (StringUtils.isNotEmpty(password)) {
+            response.setResponse(new Response(password));
+            response.getResponse().setEndSession(true);
+        } else {
+            response.setResponse(new Response(AliceReplicas.PASSWORD_NOT_SET_MSG));
+            response.getResponse().setEndSession(true);
+        }
+        return response;
+    }
+
+    private AliceResponse handleSetPasswordCommand(String userId) {
+        AliceResponse response = new AliceResponse();
+        usersQueue.add(userId);
+        response.setResponse(new Response(AliceReplicas.PASSWORD_SET_MSG));
+        response.getResponse().setEndSession(false);
+        return response;
+    }
+
+    private AliceResponse handleUnknownCommand(String userId, String rawCommand) {
+        AliceResponse response = new AliceResponse();
+        if(usersQueue.contains(userId)) {
+            usersQueue.remove(userId);
+            wiffyService.addOrUpdatePassword(userId, DEVICE_NAME, rawCommand);
+            response.setResponse(new Response(AliceReplicas.PASSWORD_SUCCESSFULLY_SET_MSG));
+            response.getResponse().setEndSession(true);
+        } else {
+            response.setResponse(new Response(AliceReplicas.INITIAL_MSG));
+            response.getResponse().setEndSession(true);
+        }
         return response;
     }
 }

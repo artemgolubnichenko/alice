@@ -1,4 +1,4 @@
-package com.issart.alice.wiffy.rest;
+package com.issart.alice.util;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;

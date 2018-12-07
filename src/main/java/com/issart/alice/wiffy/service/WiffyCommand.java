@@ -25,7 +25,10 @@ public enum WiffyCommand {
             if(!Sets.intersection(SET_PASSWORD_WORDS, commands).isEmpty()) {
                 return SET_PASSWORD;
             }
-
+            // launch with activation name and command
+            if(textCommand.equalsIgnoreCase("пароль")) {
+                return GET_PASSWORD;
+            }
         }
         return UNKNOWN;
     }
