@@ -6,10 +6,11 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.issart.alice.di.PersistenceModule;
 import com.issart.alice.di.ServiceModule;
+import com.issart.alice.exchange.ExchangeApplication;
+import com.issart.alice.rest.dto.request.AliceRequest;
 import com.issart.alice.util.Runner;
-import com.issart.alice.wiffy.rest.WiffyApplication;
-import com.issart.alice.wiffy.rest.dto.request.AliceRequest;
-import com.issart.alice.wiffy.rest.dto.response.AliceResponse;
+import com.issart.alice.wiffy.WiffyApplication;
+import com.issart.alice.rest.dto.response.AliceResponse;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
@@ -23,6 +24,8 @@ import org.sql2o.Sql2o;
 public class AliceRestVertX extends AbstractVerticle {
 
     private WiffyApplication wiffyApplication;
+    private ExchangeApplication exchangeApplication;
+
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("config");;
     private final static Logger LOGGER = Logger.getLogger(AliceRestVertX.class);
 
@@ -34,12 +37,14 @@ public class AliceRestVertX extends AbstractVerticle {
     public void start() {
         Injector injector = Guice.createInjector(new ServiceModule(), new PersistenceModule());
         wiffyApplication = injector.getInstance(WiffyApplication.class);
+        exchangeApplication = injector.getInstance(ExchangeApplication.class);
 
         initDatabase(injector.getInstance(Sql2o.class).getDataSource());
 
         Router router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
         router.post("/rest/wiffy").handler(this::handleWiffyRequest);
+        router.post("/rest/exchange").handler(this::handleWiffyRequest);
 
         vertx.createHttpServer().requestHandler(router::accept).listen(
             Integer.valueOf(RESOURCE_BUNDLE.getString("server.port"))
@@ -53,6 +58,18 @@ public class AliceRestVertX extends AbstractVerticle {
         AliceRequest request = Json.decodeValue(body, AliceRequest.class);
         HttpServerResponse serverResponse = routingContext.response();
         AliceResponse response = wiffyApplication.handleAliceRequest(request);
+        serverResponse.setChunked(true);
+        serverResponse.write(Json.encode(response));
+        serverResponse.end();
+    }
+
+    public void handleExchangeRequest(RoutingContext routingContext) {
+        String body = routingContext.getBodyAsString();
+        LOGGER.debug(body);
+
+        AliceRequest request = Json.decodeValue(body, AliceRequest.class);
+        HttpServerResponse serverResponse = routingContext.response();
+        AliceResponse response = exchangeApplication.handleAliceRequest(request);
         serverResponse.setChunked(true);
         serverResponse.write(Json.encode(response));
         serverResponse.end();

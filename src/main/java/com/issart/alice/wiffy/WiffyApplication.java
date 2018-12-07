@@ -1,13 +1,13 @@
-package com.issart.alice.wiffy.rest;
+package com.issart.alice.wiffy;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import com.google.inject.Inject;
-import com.issart.alice.wiffy.rest.dto.request.AliceRequest;
-import com.issart.alice.wiffy.rest.dto.response.AliceReplicas;
-import com.issart.alice.wiffy.rest.dto.response.AliceResponse;
-import com.issart.alice.wiffy.rest.dto.response.Response;
+import com.issart.alice.rest.dto.request.AliceRequest;
+import com.issart.alice.rest.dto.response.AliceReplicas;
+import com.issart.alice.rest.dto.response.AliceResponse;
+import com.issart.alice.rest.dto.response.Response;
 import com.issart.alice.wiffy.service.IWiffyService;
 import com.issart.alice.wiffy.service.WiffyCommand;
 import org.apache.commons.lang3.StringUtils;

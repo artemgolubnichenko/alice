@@ -1,4 +1,4 @@
-package com.issart.alice.wiffy.rest.dto.request;
+package com.issart.alice.rest.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

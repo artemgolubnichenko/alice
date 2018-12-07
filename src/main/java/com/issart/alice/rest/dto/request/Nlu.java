@@ -1,4 +1,4 @@
-package com.issart.alice.wiffy.rest.dto.request;
+package com.issart.alice.rest.dto.request;
 
 import java.util.ArrayList;
 import java.util.List;

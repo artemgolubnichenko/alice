@@ -1,4 +1,4 @@
-package com.issart.alice.wiffy.rest.dto.response;
+package com.issart.alice.rest.dto.response;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.issart.alice.wiffy.rest.dto.request.Payload;
+import com.issart.alice.rest.dto.request.Payload;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

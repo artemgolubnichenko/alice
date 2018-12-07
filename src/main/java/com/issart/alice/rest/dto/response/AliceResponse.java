@@ -1,9 +1,9 @@
-package com.issart.alice.wiffy.rest.dto.response;
+package com.issart.alice.rest.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.issart.alice.wiffy.rest.dto.request.Session;
+import com.issart.alice.rest.dto.request.Session;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
