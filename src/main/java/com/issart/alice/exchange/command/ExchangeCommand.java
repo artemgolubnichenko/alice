@@ -1,5 +1,6 @@
 package com.issart.alice.exchange.command;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +41,7 @@ public enum ExchangeCommand {
     }
 
     public static Exchange getExchangeType(ExchangeCommand command, String textCommand) throws ExchangeSkillException {
-        Set<String> commands = new HashSet<>(Arrays.asList(textCommand.split(" ")));
+        List<String> commands = new ArrayList<>(Arrays.asList(textCommand.split(" ")));
         if(command == GET_CURRENCY) {
             List<String> candidates = commands.stream()
                 .filter(s -> !GET_CURRENCY_WORDS.contains(s))
@@ -54,17 +55,15 @@ public enum ExchangeCommand {
                 }
             }
         } else if(command == GET_INDEX) {
-            List<String> candidates = commands.stream()
+            String candidate = commands.stream()
                 .filter(s -> !GET_INDEX_WORDS.contains(s))
+                .filter(s -> !s.equalsIgnoreCase("какой"))
                 .filter(s -> s.length() > 2)
-                .collect(Collectors.toList());
-            for(String candidate : candidates) {
-                try {
-                    Index index = Index.getLevenshteinIndex(candidate);
-                    return index;
-                } catch (IllegalArgumentException ex) {
-                    // don't need to handle it
-                }
+                .collect(Collectors.joining(""));
+            try {
+                return Index.getLevenshteinIndex(candidate);
+            } catch (IllegalArgumentException ex) {
+                // don't need to handle it
             }
         }
         throw new ExchangeSkillException(command == GET_INDEX ?

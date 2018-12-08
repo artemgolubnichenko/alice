@@ -20,9 +20,13 @@ public abstract class Application {
         try {
             response = processRequest(request);
         } catch (ExchangeSkillException e) {
-            LOGGER.error(rawCommand, e);
             response = new AliceResponse();
             response.setResponse(new Response(e.getMessage()));
+            LOGGER.error(rawCommand, e);
+        } catch (Exception ex) {
+            response = new AliceResponse();
+            response.setResponse(new Response("Алиса не смогла выполнить команду"));
+            LOGGER.error(rawCommand, ex);
         }
         response.setSession(request.getSession());
         response.getSession().setNew(null);

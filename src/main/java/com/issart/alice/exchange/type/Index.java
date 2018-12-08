@@ -1,22 +1,24 @@
 package com.issart.alice.exchange.type;
 
-import com.issart.alice.exchange.exception.ExchangeSkillException;
-import com.issart.alice.exchange.rest.dto.response.AliceReplicas;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public enum Index implements Exchange {
 
-    NYSE("Нью-Йоркская фондовая биржа", ""),
-    NASDAQ("NASDAQ", "Nasdaq"), // https://www.rbc.ru/ajax/indicators
-    LSE("Лондонская фондовая биржа", ""),
-    IMOEX("Московская биржа", "IMOEX"), // https://www.rbc.ru/ajax/indicators
-    RTSI("Российская торговая система", "RTSI"); // https://www.rbc.ru/ajax/indicators
+    NYSE("Нью-Йоркская фондовая биржа", Arrays.asList("нью-йоркскаяфондоваябиржа"), ""),
+    NASDAQ("NASDAQ", Arrays.asList("насдак"), "Nasdaq"), // https://www.rbc.ru/ajax/indicators
+    LSE("Лондонская фондовая биржа", Arrays.asList("лондонскаяфондоваябиржа"), ""),
+    IMOEX("Московская биржа", Arrays.asList("московскаябиржа", "биржамосковская"), "IMOEX"), // https://www.rbc.ru/ajax/indicators
+    RTSI("Российская торговая система", Arrays.asList("российскаяторговаясистема", "ртс"), "RTSI"); // https://www.rbc.ru/ajax/indicators
 
     private String name;
+    private List<String> synonyms;
     private String code;
 
-    Index(String name, String code) {
+    Index(String name, List<String> synonyms, String code) {
         this.name = name;
+        this.synonyms = synonyms;
         this.code = code;
     }
 
@@ -40,16 +42,18 @@ public enum Index implements Exchange {
 
     public static Index getLevenshteinIndex(String index) {
         Index[] indecies = values();
-        int min = 3;
+        int min = 8;
         Index result = null;
         for(Index idx : indecies) {
-            int dist = StringUtils.getLevenshteinDistance(idx.getName(), index);
-            if(dist < min) {
-                min = dist;
-                result = idx;
+            for(String synonym : idx.synonyms) {
+                int dist = StringUtils.getLevenshteinDistance(synonym, index);
+                if (dist < min) {
+                    min = dist;
+                    result = idx;
+                }
             }
         }
-        if(result != null && min <= 3) {
+        if(result != null && min < 7) {
             return result;
         } else {
             throw new IllegalArgumentException();
