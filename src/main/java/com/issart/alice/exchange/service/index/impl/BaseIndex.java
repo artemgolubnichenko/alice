@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -11,6 +12,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import com.issart.alice.exchange.service.currency.impl.BaseCurrency;
 import com.issart.alice.exchange.service.index.IIndex;
+import com.issart.alice.exchange.service.index.rest.dto.response.IndexInfo;
+import com.issart.alice.exchange.service.index.rest.dto.response.IndexResponse;
 import com.issart.alice.exchange.type.Exchange;
 import com.issart.alice.exchange.type.ExchangeInfo;
 import io.vertx.core.json.Json;
@@ -27,7 +30,7 @@ public abstract class BaseIndex implements IIndex {
 
     protected Map<Exchange, ExchangeInfo> exchangeInfoMap = new HashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    public static final  String RESOURCE_URL = "https://www.cbr-xml-daily.ru/daily_json.js";
+    public static final  String RESOURCE_URL = "https://www.rbc.ru/ajax/indicators";
     private final static Logger LOGGER = Logger.getLogger(BaseCurrency.class);
 
     public BaseIndex() {
@@ -39,7 +42,7 @@ public abstract class BaseIndex implements IIndex {
 
 
     @Override
-    public ExchangeInfo getIndex(Exchange exchange) {
+    public ExchangeInfo getIndex() {
         return exchangeInfoMap.get(getExchangeCode());
     }
 
@@ -51,22 +54,22 @@ public abstract class BaseIndex implements IIndex {
             request.addHeader("content-type", "application/json");
             HttpResponse result = httpClient.execute(request);
             String json = EntityUtils.toString(result.getEntity(), "UTF-8");
-            CurrencyResponse response = Json.decodeValue(json, CurrencyResponse.class);
-            Map<String, Valute> map = response.getValutes();
-            Set<String> availableCarriencies = new HashSet<>(Arrays.asList(Currency.values()))
+            IndexResponse response = Json.decodeValue(json, IndexResponse.class);
+            List<IndexInfo> indexInfoList = response.getIndices();
+            Set<String> availableIndices = new HashSet<>(Arrays.asList(Exchange.values()))
                 .stream()
-                .map(Currency::getCode)
+                .map(Exchange::getCode)
                 .collect(Collectors.toSet());
-            for (Map.Entry<String, Valute> entry : map.entrySet())
-            {
-                if(availableCarriencies.contains(entry.getKey())) {
-                    Valute valute = entry.getValue();
-                    ExchangeInfo info = new ExchangeInfo(valute.getValue(), valute.getPrevious());
-                    currencyInfoMap.put(Currency.valueOf(entry.getKey()), info);
+            indexInfoList.forEach(indexInfo -> {
+                if(availableIndices.contains(indexInfo.getName())) {
+                    float curVal = Float.parseFloat(indexInfo.getValue1());
+                    ExchangeInfo info = new ExchangeInfo(curVal,
+                        curVal - indexInfo.getChgAbs().floatValue());
+                    exchangeInfoMap.put(Exchange.parseCode(indexInfo.getName()), info);
                 }
-            }
+            });
         } catch (IOException ex) {
-            LOGGER.error("Can't pull currencies: " + ex.getMessage(), ex);
+            LOGGER.error("Can't pull indices: " + ex.getMessage(), ex);
         }
     }
 }

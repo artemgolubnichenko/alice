@@ -23,4 +23,14 @@ public enum Exchange {
     public String getCode() {
         return code;
     }
+
+    public static Exchange parseCode(String code) {
+        Exchange[] values = values();
+        for(Exchange value : values) {
+            if (value.getCode().equalsIgnoreCase(code)) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException("Can't parse index with code: " + code);
+    }
 }

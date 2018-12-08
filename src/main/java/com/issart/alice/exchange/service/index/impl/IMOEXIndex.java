@@ -2,11 +2,10 @@ package com.issart.alice.exchange.service.index.impl;
 
 import com.issart.alice.exchange.type.Exchange;
 
-public class LSEIndex extends BaseIndex {
-
+public class IMOEXIndex extends BaseIndex {
 
     @Override
     public Exchange getExchangeCode() {
-        return Exchange.LSE;
+        return Exchange.IMOEX;
     }
 }

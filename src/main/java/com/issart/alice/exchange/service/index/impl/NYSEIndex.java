@@ -1,13 +1,11 @@
 package com.issart.alice.exchange.service.index.impl;
 
-import com.issart.alice.exchange.service.index.IIndex;
 import com.issart.alice.exchange.type.Exchange;
-import com.issart.alice.exchange.type.ExchangeInfo;
 
-public class NYSEIndex implements IIndex {
+public class NYSEIndex extends BaseIndex {
 
     @Override
-    public ExchangeInfo getIndex(Exchange exchange) {
-        return null;
+    public Exchange getExchangeCode() {
+        return Exchange.NYSE;
     }
 }
