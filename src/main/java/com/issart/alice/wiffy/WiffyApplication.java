@@ -27,7 +27,7 @@ public class WiffyApplication extends Application {
     protected AliceResponse processRequest(AliceRequest request) {
         AliceResponse response = new AliceResponse();
         if(newSession && (rawCommand.isEmpty()
-            || request.getRequest().getNlu().getEntities().isEmpty())) {
+            || request.getRequest().getNlu().getTokens().isEmpty())) {
             response.setResponse(new Response(AliceReplicas.INITIAL_MSG));
         } else {
             WiffyCommand command = WiffyCommand.parseCommand(rawCommand);

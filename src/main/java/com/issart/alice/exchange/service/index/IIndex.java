@@ -4,5 +4,5 @@ import com.issart.alice.exchange.type.ExchangeInfo;
 
 public interface IIndex {
 
-    ExchangeInfo getIndex();
+    ExchangeInfo getIndexExchangeInfo();
 }

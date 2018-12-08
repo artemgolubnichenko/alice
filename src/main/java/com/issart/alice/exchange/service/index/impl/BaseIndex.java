@@ -14,7 +14,7 @@ import com.issart.alice.exchange.service.currency.impl.BaseCurrency;
 import com.issart.alice.exchange.service.index.IIndex;
 import com.issart.alice.exchange.service.index.rest.dto.response.IndexInfo;
 import com.issart.alice.exchange.service.index.rest.dto.response.IndexResponse;
-import com.issart.alice.exchange.type.Exchange;
+import com.issart.alice.exchange.type.Index;
 import com.issart.alice.exchange.type.ExchangeInfo;
 import io.vertx.core.json.Json;
 import org.apache.http.HttpResponse;
@@ -28,12 +28,13 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 
 public abstract class BaseIndex implements IIndex {
 
-    protected Map<Exchange, ExchangeInfo> exchangeInfoMap = new HashMap<>();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    public static final  String RESOURCE_URL = "https://www.rbc.ru/ajax/indicators";
-    private final static Logger LOGGER = Logger.getLogger(BaseCurrency.class);
+    protected Map<Index, ExchangeInfo>     exchangeInfoMap = new HashMap<>();
+    private final ScheduledExecutorService scheduler       = Executors.newScheduledThreadPool(1);
+    public static final  String            RESOURCE_URL    = "https://www.rbc.ru/ajax/indicators";
+    private final static Logger            LOGGER          = Logger.getLogger(BaseCurrency.class);
 
     public BaseIndex() {
+        pull();
         scheduler.scheduleAtFixedRate(() -> {
             pull();
             LOGGER.info("Pulling for currencies..");
@@ -42,11 +43,11 @@ public abstract class BaseIndex implements IIndex {
 
 
     @Override
-    public ExchangeInfo getIndex() {
+    public ExchangeInfo getIndexExchangeInfo() {
         return exchangeInfoMap.get(getExchangeCode());
     }
 
-    public abstract Exchange getExchangeCode();
+    public abstract Index getExchangeCode();
 
     private void pull() {
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
@@ -56,16 +57,16 @@ public abstract class BaseIndex implements IIndex {
             String json = EntityUtils.toString(result.getEntity(), "UTF-8");
             IndexResponse response = Json.decodeValue(json, IndexResponse.class);
             List<IndexInfo> indexInfoList = response.getIndices();
-            Set<String> availableIndices = new HashSet<>(Arrays.asList(Exchange.values()))
+            Set<String> availableIndices = new HashSet<>(Arrays.asList(Index.values()))
                 .stream()
-                .map(Exchange::getCode)
+                .map(Index::getCode)
                 .collect(Collectors.toSet());
             indexInfoList.forEach(indexInfo -> {
                 if(availableIndices.contains(indexInfo.getName())) {
                     float curVal = Float.parseFloat(indexInfo.getValue1());
                     ExchangeInfo info = new ExchangeInfo(curVal,
                         curVal - indexInfo.getChgAbs().floatValue());
-                    exchangeInfoMap.put(Exchange.parseCode(indexInfo.getName()), info);
+                    exchangeInfoMap.put(Index.parseCode(indexInfo.getName()), info);
                 }
             });
         } catch (IOException ex) {

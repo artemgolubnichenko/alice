@@ -1,11 +1,11 @@
 package com.issart.alice.exchange.service.index.impl;
 
-import com.issart.alice.exchange.type.Exchange;
+import com.issart.alice.exchange.type.Index;
 
 public class NASDAQIndex extends BaseIndex {
 
     @Override
-    public Exchange getExchangeCode() {
-        return Exchange.NASDAQ;
+    public Index getExchangeCode() {
+        return Index.NASDAQ;
     }
 }

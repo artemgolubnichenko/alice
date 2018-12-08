@@ -23,7 +23,6 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public abstract class BaseCurrency implements ICurrency {
 
@@ -33,6 +32,7 @@ public abstract class BaseCurrency implements ICurrency {
     private final static Logger LOGGER = Logger.getLogger(BaseCurrency.class);
 
     public BaseCurrency() {
+        pull();
         scheduler.scheduleAtFixedRate(() -> {
             pull();
             LOGGER.info("Pulling for currencies..");
