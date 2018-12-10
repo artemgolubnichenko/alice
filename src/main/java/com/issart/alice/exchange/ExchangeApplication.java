@@ -2,6 +2,7 @@ package com.issart.alice.exchange;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import com.github.moneytostr.MoneyToStr;
 import com.google.inject.Inject;
 import com.issart.alice.common.Application;
 import com.issart.alice.exchange.command.ExchangeCommand;
@@ -50,8 +51,16 @@ public class ExchangeApplication extends Application {
             Exchange type = ExchangeCommand.getExchangeType(command, rawCommand);
             ExchangeInfo info = service.handle(command, type);
             String change = info.getDiff() > 0 ? "вырос" : "упал";
+            String diff = "";
+            if(command == ExchangeCommand.GET_CURRENCY) {
+                MoneyToStr moneyToStr = new MoneyToStr(MoneyToStr.Currency.RUR,
+                    MoneyToStr.Language.RUS, MoneyToStr.Pennies.NUMBER);
+                diff = moneyToStr.convert((double)Math.abs(info.getDiff()));
+            } else if(command == ExchangeCommand.GET_INDEX) {
+                diff = String.valueOf(Math.abs(info.getDiff()));
+            }
             String text = String.format(EXCHANGE_ANSWER_MSG, command.getName(),
-                info.getCurrent(), info.getCurrency(), change, Math.abs(info.getDiff()));
+                info.getCurrent(), info.getCurrency(), change, diff);
             response.setResponse(new Response(text));
             response.getResponse().setEndSession(true);
         }
