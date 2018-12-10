@@ -3,6 +3,8 @@ package com.issart.alice.di;
 import java.util.ResourceBundle;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
+import com.issart.alice.exchange.service.repository.IRepository;
+import com.issart.alice.exchange.service.repository.Repository;
 import com.issart.alice.wiffy.db.IWiffyDao;
 import com.issart.alice.wiffy.db.impl.WiffyDaoImpl;
 import org.sql2o.Sql2o;
@@ -17,5 +19,6 @@ public class PersistenceModule extends AbstractModule {
             rb.getString("db.password"), new PostgresQuirks());
         bind(Sql2o.class).toInstance(sql2o);
         bind(IWiffyDao.class).to(WiffyDaoImpl.class).in(Singleton.class);
+        bind(IRepository.class).to(Repository.class).in(Singleton.class);
     }
 }

@@ -1,11 +1,14 @@
 package com.issart.alice.exchange;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import com.google.inject.Inject;
 import com.issart.alice.common.Application;
 import com.issart.alice.exchange.command.ExchangeCommand;
 import com.issart.alice.exchange.exception.ExchangeSkillException;
 import com.issart.alice.exchange.rest.dto.response.AliceReplicas;
 import com.issart.alice.exchange.service.IExchangeCommandHandleService;
+import com.issart.alice.exchange.service.repository.IRepository;
 import com.issart.alice.exchange.type.Exchange;
 import com.issart.alice.exchange.type.ExchangeInfo;
 import com.issart.alice.rest.dto.request.AliceRequest;
@@ -14,12 +17,27 @@ import com.issart.alice.rest.dto.response.Response;
 import org.apache.log4j.Logger;
 
 import static com.issart.alice.exchange.rest.dto.response.AliceReplicas.EXCHANGE_ANSWER_MSG;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class ExchangeApplication extends Application {
 
     @Inject
     private IExchangeCommandHandleService service;
+    @Inject
+    private IRepository repository;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final static Logger LOGGER = Logger.getLogger(ExchangeApplication.class);
+
+
+    @Inject
+    public ExchangeApplication(IRepository repository) {
+        int i = 0;
+        this.repository = repository;
+        scheduler.scheduleAtFixedRate(() -> {
+            repository.pull();
+            LOGGER.info("Pulling..");
+        }, 0, 1, MINUTES);
+    }
 
     @Override
     protected AliceResponse processRequest(AliceRequest request) throws ExchangeSkillException {
