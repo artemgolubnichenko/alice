@@ -11,15 +11,16 @@ import com.issart.alice.exchange.exception.ExchangeSkillException;
 import com.issart.alice.exchange.type.Currency;
 import com.issart.alice.exchange.type.Exchange;
 import com.issart.alice.exchange.type.Index;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.issart.alice.exchange.rest.dto.response.AliceReplicas.EXCEPTION_CURRENCY_MSG;
 import static com.issart.alice.exchange.rest.dto.response.AliceReplicas.EXCEPTION_INDEX_MSG;
+import static com.issart.alice.exchange.rest.dto.response.AliceReplicas.EXCEPTION_MSG;
 
 public enum ExchangeCommand {
 
     GET_INDEX("Индекс"),
-    GET_CURRENCY("Курс"),
-    UNKNOWN("");
+    GET_CURRENCY("Курс");
 
     ExchangeCommand(String name) {
         this.name = name;
@@ -37,7 +38,7 @@ public enum ExchangeCommand {
         if(!Sets.intersection(GET_CURRENCY_WORDS, commands).isEmpty()) {
             return GET_CURRENCY;
         }
-        return UNKNOWN;
+        throw new ExchangeSkillException(EXCEPTION_MSG);
     }
 
     public static Exchange getExchangeType(ExchangeCommand command, String textCommand) throws ExchangeSkillException {
@@ -58,6 +59,7 @@ public enum ExchangeCommand {
             String candidate = commands.stream()
                 .filter(s -> !GET_INDEX_WORDS.contains(s))
                 .filter(s -> !s.equalsIgnoreCase("какой"))
+                .filter(s -> StringUtils.getLevenshteinDistance("какой", s) > 3)
                 .filter(s -> s.length() > 2)
                 .collect(Collectors.joining(""));
             try {
