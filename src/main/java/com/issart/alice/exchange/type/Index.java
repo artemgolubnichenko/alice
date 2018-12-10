@@ -6,13 +6,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum Index implements Exchange {
 
-    NYSE("Нью-Йоркская фондовая биржа", Arrays.asList("нью-йоркскаяфондоваябиржа"), "^NYA"), // YahooFinance
+    NYSE("Нью-Йоркская фондовая биржа", Arrays.asList("нью-йорк", "нью-йоркская"), "^NYA"), // YahooFinance
     NASDAQ("NASDAQ", Arrays.asList("насдак"), "Nasdaq"), // https://www.rbc.ru/ajax/indicators
-    LSE("Лондонская фондовая биржа", Arrays.asList("лондонскаяфондоваябиржа"), "LSE.L"), // YahooFinance
-    IMOEX("Московская биржа", Arrays.asList("московскаябиржа", "биржамосковская", "ммвб"), "IMOEX"),
-    //
-    // https://www.rbc.ru/ajax/indicators
-    RTSI("Российская торговая система", Arrays.asList("российскаяторговаясистема", "ртс"), "RTSI"); // https://www.rbc.ru/ajax/indicators
+    LSE("Лондонская фондовая биржа", Arrays.asList("лондон", "лондонская"), "LSE.L"), // YahooFinance
+    IMOEX("Московская биржа", Arrays.asList("московскаябиржа", "биржамосковская", "ммвб", "московская"), "IMOEX"), // https://www.rbc.ru/ajax/indicators
+    RTSI("Российская торговая система", Arrays.asList("российскаяторговаясистема", "ртс", "российская"), "RTSI"); // https://www.rbc.ru/ajax/indicators
 
     private String name;
     private List<String> synonyms;

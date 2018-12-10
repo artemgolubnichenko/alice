@@ -58,11 +58,14 @@ public enum ExchangeCommand {
         } else if(command == GET_INDEX) {
             String candidate = commands.stream()
                 .filter(s -> !GET_INDEX_WORDS.contains(s))
+                .filter(s -> s.length() > 2)
                 .filter(s -> !s.equalsIgnoreCase("какой"))
                 .filter(s -> StringUtils.getLevenshteinDistance("какой", s) > 3)
-                .filter(s -> s.length() > 2)
+                .filter(s -> StringUtils.getLevenshteinDistance("биржа", s) > 3)
+                .filter(s -> StringUtils.getLevenshteinDistance("фондовая", s) > 3)
                 .collect(Collectors.joining(""));
             try {
+                System.out.println("Ex: " + candidate);
                 return Index.getLevenshteinIndex(candidate);
             } catch (IllegalArgumentException ex) {
                 // don't need to handle it
