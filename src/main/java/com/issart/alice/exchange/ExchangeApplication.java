@@ -38,7 +38,7 @@ public class ExchangeApplication extends Application {
         scheduler.scheduleAtFixedRate(() -> {
             repository.pull();
             LOGGER.info("Pulling..");
-        }, 0, 1, MINUTES);
+        }, 0, 50, MINUTES);
     }
 
     @Override

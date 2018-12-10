@@ -53,7 +53,7 @@ public class AliceRestVertX extends AbstractVerticle {
 
     public void handleWiffyRequest(RoutingContext routingContext) {
         String body = routingContext.getBodyAsString();
-        LOGGER.debug(body);
+        LOGGER.info(body);
 
         AliceRequest request = Json.decodeValue(body, AliceRequest.class);
         HttpServerResponse serverResponse = routingContext.response();
@@ -65,7 +65,7 @@ public class AliceRestVertX extends AbstractVerticle {
 
     public void handleExchangeRequest(RoutingContext routingContext) {
         String body = routingContext.getBodyAsString();
-        LOGGER.debug(body);
+        LOGGER.info(body);
 
         AliceRequest request = Json.decodeValue(body, AliceRequest.class);
         HttpServerResponse serverResponse = routingContext.response();
