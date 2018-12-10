@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum Index implements Exchange {
 
-    NYSE("Нью-Йоркская фондовая биржа", Arrays.asList("нью-йоркскаяфондоваябиржа"), ""),
+    NYSE("Нью-Йоркская фондовая биржа", Arrays.asList("нью-йоркскаяфондоваябиржа"), "^NYA"), // YahooFinance
     NASDAQ("NASDAQ", Arrays.asList("насдак"), "Nasdaq"), // https://www.rbc.ru/ajax/indicators
-    LSE("Лондонская фондовая биржа", Arrays.asList("лондонскаяфондоваябиржа"), ""),
+    LSE("Лондонская фондовая биржа", Arrays.asList("лондонскаяфондоваябиржа"), "LSE.L"), // YahooFinance
     IMOEX("Московская биржа", Arrays.asList("московскаябиржа", "биржамосковская"), "IMOEX"), // https://www.rbc.ru/ajax/indicators
     RTSI("Российская торговая система", Arrays.asList("российскаяторговаясистема", "ртс"), "RTSI"); // https://www.rbc.ru/ajax/indicators
 

@@ -25,6 +25,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import yahoofinance.Stock;
+import yahoofinance.YahooFinance;
+
+import static com.issart.alice.exchange.type.Index.LSE;
+import static com.issart.alice.exchange.type.Index.NYSE;
 
 public class Repository implements IRepository {
 
@@ -68,7 +73,8 @@ public class Repository implements IRepository {
             {
                 if(availableCarriencies.contains(entry.getKey())) {
                     Valute valute = entry.getValue();
-                    ExchangeInfo info = new ExchangeInfo(valute.getValue(), valute.getPrevious());
+                    ExchangeInfo info = new ExchangeInfo(valute.getValue(), valute.getPrevious(),
+                        "рублей");
                     currencyInfoMap.put(Currency.valueOf(entry.getKey()), info);
                 }
             }
@@ -78,6 +84,7 @@ public class Repository implements IRepository {
     }
 
     private void pullIndecies() {
+        // NASDAQ, IMOEX, RTSI
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(RESOURCE_URL_INDEX);
             request.addHeader("content-type", "application/json");
@@ -93,12 +100,26 @@ public class Repository implements IRepository {
                 if(availableIndices.contains(indexInfo.getName())) {
                     float curVal = Float.parseFloat(indexInfo.getValue1());
                     ExchangeInfo info = new ExchangeInfo(curVal,
-                        curVal - indexInfo.getChgAbs().floatValue());
+                        curVal - indexInfo.getChgAbs().floatValue(), "USD");
                     exchangeInfoMap.put(Index.parseCode(indexInfo.getName()), info);
                 }
             });
         } catch (IOException ex) {
-            LOGGER.error("Can't pull indices: " + ex.getMessage(), ex);
+            LOGGER.error("Can't pull indices from RBK: " + ex.getMessage(), ex);
         }
+        // NYSE, LSE
+        List<Index> yahooFinanceStocks = Arrays.asList(NYSE, LSE);
+        yahooFinanceStocks.forEach(index -> {
+            try {
+                Stock stock = YahooFinance.get(index.getCode());
+                float price = stock.getQuote(true).getPrice().floatValue();
+                float change = stock.getQuote(true).getChange().floatValue();
+                String currency = stock.getCurrency();
+                ExchangeInfo info = new ExchangeInfo(price, price-change, currency);
+                exchangeInfoMap.put(index, info);
+            } catch (IOException ex) {
+                LOGGER.error("Can't pull indices from YahooFinance: " + ex.getMessage(), ex);
+            }
+        });
     }
 }

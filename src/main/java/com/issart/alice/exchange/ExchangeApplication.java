@@ -51,7 +51,7 @@ public class ExchangeApplication extends Application {
             ExchangeInfo info = service.handle(command, type);
             String change = info.getDiff() > 0 ? "вырос" : "упал";
             String text = String.format(EXCHANGE_ANSWER_MSG, command.getName(),
-                info.getCurrent(), change, info.getDiff());
+                info.getCurrent(), info.getCurrency(), change, Math.abs(info.getDiff()));
             response.setResponse(new Response(text));
             response.getResponse().setEndSession(true);
         }

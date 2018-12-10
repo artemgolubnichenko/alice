@@ -9,5 +9,5 @@ public class AliceReplicas {
         "какой индекс у РТС или какой курс доллара";
     public static final String EXCEPTION_INDEX_MSG = "Неизвестная биржа. Попробуйте еще раз спросить";
     public static final String EXCEPTION_CURRENCY_MSG = "Неизвестная валюта. Попробуйте еще раз спросить";
-    public static final String EXCHANGE_ANSWER_MSG = "%s %s, %s на %s";
+    public static final String EXCHANGE_ANSWER_MSG = "%s %s %s, %s на %s";
 }
