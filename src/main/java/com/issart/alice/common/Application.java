@@ -14,7 +14,7 @@ public abstract class Application {
 
     public AliceResponse handleAliceRequest(AliceRequest request) {
         newSession = request.getSession().getNew();
-        rawCommand = request.getRequest().getCommand();
+        rawCommand = request.getRequest().getCommand().toLowerCase();
 
         AliceResponse response = null;
         try {

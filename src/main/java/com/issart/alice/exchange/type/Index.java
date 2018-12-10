@@ -6,11 +6,13 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum Index implements Exchange {
 
-    NYSE("Нью-Йоркская фондовая биржа", Arrays.asList("нью-йорк", "нью-йоркская"), "^NYA"), // YahooFinance
+    NYSE("Нью-Йоркская фондовая биржа", Arrays.asList("нью-йорк", "нью-йоркская", "нью-йоркской"), "^NYA"), //YahooFinance
     NASDAQ("NASDAQ", Arrays.asList("насдак"), "Nasdaq"), // https://www.rbc.ru/ajax/indicators
-    LSE("Лондонская фондовая биржа", Arrays.asList("лондон", "лондонская"), "LSE.L"), // YahooFinance
-    IMOEX("Московская биржа", Arrays.asList("московскаябиржа", "биржамосковская", "ммвб", "московская"), "IMOEX"), // https://www.rbc.ru/ajax/indicators
-    RTSI("Российская торговая система", Arrays.asList("российскаяторговаясистема", "ртс", "российская"), "RTSI"); // https://www.rbc.ru/ajax/indicators
+    LSE("Лондонская фондовая биржа", Arrays.asList("лондон", "лондонская", "лондонской"), "LSE.L"), // YahooFinance
+    IMOEX("Московская биржа", Arrays.asList("московскаябиржа", "биржамосковская", "ммвб",
+        "московская", "московской"), "IMOEX"), // https://www.rbc.ru/ajax/indicators
+    RTSI("Российская торговая система", Arrays.asList("российскаяторговаясистема", "ртс",
+        "российская", "российской"), "RTSI"); // https://www.rbc.ru/ajax/indicators
 
     private String name;
     private List<String> synonyms;
@@ -42,7 +44,7 @@ public enum Index implements Exchange {
 
     public static Index getLevenshteinIndex(String index) {
         Index[] indecies = values();
-        int min = 8;
+        int min = 2;
         Index result = null;
         for(Index idx : indecies) {
             for(String synonym : idx.synonyms) {
@@ -53,7 +55,7 @@ public enum Index implements Exchange {
                 }
             }
         }
-        if(result != null && min < 7) {
+        if(result != null && min <= 1) {
             return result;
         } else {
             throw new IllegalArgumentException();

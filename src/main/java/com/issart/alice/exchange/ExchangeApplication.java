@@ -1,5 +1,6 @@
 package com.issart.alice.exchange;
 
+import java.math.BigDecimal;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import com.github.moneytostr.MoneyToStr;
@@ -57,7 +58,9 @@ public class ExchangeApplication extends Application {
                     MoneyToStr.Language.RUS, MoneyToStr.Pennies.NUMBER);
                 diff = moneyToStr.convert((double)Math.abs(info.getDiff()));
             } else if(command == ExchangeCommand.GET_INDEX) {
-                diff = String.valueOf(Math.abs(info.getPercent())) + " %";
+                String percent = new BigDecimal(Math.abs(info.getPercent()))
+                    .setScale(1, BigDecimal.ROUND_HALF_UP).toString();
+                diff = percent + " %";
             }
             String text = String.format(EXCHANGE_ANSWER_MSG, command.getName(),
                 info.getCurrent(), info.getCurrency(), change, diff);
