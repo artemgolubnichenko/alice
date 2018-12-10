@@ -57,6 +57,9 @@ public class ExchangeApplication extends Application {
                 MoneyToStr moneyToStr = new MoneyToStr(MoneyToStr.Currency.RUR,
                     MoneyToStr.Language.RUS, MoneyToStr.Pennies.NUMBER);
                 diff = moneyToStr.convert((double)Math.abs(info.getDiff()));
+                if(info.getDiff() < 0.0f) {
+                    diff = diff.replaceAll("ноль рублей", "");
+                }
             } else if(command == ExchangeCommand.GET_INDEX) {
                 String percent = new BigDecimal(Math.abs(info.getPercent()))
                     .setScale(1, BigDecimal.ROUND_HALF_UP).toString();
