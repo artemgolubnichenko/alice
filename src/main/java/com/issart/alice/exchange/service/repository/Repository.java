@@ -73,8 +73,7 @@ public class Repository implements IRepository {
             {
                 if(availableCarriencies.contains(entry.getKey())) {
                     Valute valute = entry.getValue();
-                    ExchangeInfo info = new ExchangeInfo(valute.getValue(), valute.getPrevious(),
-                        "рублей");
+                    ExchangeInfo info = new ExchangeInfo(valute.getValue(), valute.getPrevious(), "рублей", 0);
                     currencyInfoMap.put(Currency.valueOf(entry.getKey()), info);
                 }
             }
@@ -100,7 +99,7 @@ public class Repository implements IRepository {
                 if(availableIndices.contains(indexInfo.getName())) {
                     float curVal = Float.parseFloat(indexInfo.getValue1());
                     ExchangeInfo info = new ExchangeInfo(curVal,
-                        curVal - indexInfo.getChgAbs().floatValue(), "USD");
+                        curVal - indexInfo.getChgAbs().floatValue(), "пунктов", indexInfo.getChgPercent().floatValue());
                     exchangeInfoMap.put(Index.parseCode(indexInfo.getName()), info);
                 }
             });
@@ -114,8 +113,8 @@ public class Repository implements IRepository {
                 Stock stock = YahooFinance.get(index.getCode());
                 float price = stock.getQuote(true).getPrice().floatValue();
                 float change = stock.getQuote(true).getChange().floatValue();
-                String currency = stock.getCurrency();
-                ExchangeInfo info = new ExchangeInfo(price, price-change, currency);
+                float percent = stock.getQuote(true).getChangeInPercent().floatValue();
+                ExchangeInfo info = new ExchangeInfo(price, price-change, "пунктов", percent);
                 exchangeInfoMap.put(index, info);
             } catch (IOException ex) {
                 LOGGER.error("Can't pull indices from YahooFinance: " + ex.getMessage(), ex);

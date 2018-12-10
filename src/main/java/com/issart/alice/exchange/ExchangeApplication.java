@@ -57,7 +57,7 @@ public class ExchangeApplication extends Application {
                     MoneyToStr.Language.RUS, MoneyToStr.Pennies.NUMBER);
                 diff = moneyToStr.convert((double)Math.abs(info.getDiff()));
             } else if(command == ExchangeCommand.GET_INDEX) {
-                diff = String.valueOf(Math.abs(info.getDiff()));
+                diff = String.valueOf(Math.abs(info.getPercent())) + " %";
             }
             String text = String.format(EXCHANGE_ANSWER_MSG, command.getName(),
                 info.getCurrent(), info.getCurrency(), change, diff);

@@ -7,11 +7,13 @@ public class ExchangeInfo {
     private float current;
     private float prev;
     private String currency;
+    private float percent;
 
-    public ExchangeInfo(float current, float prev, String currency) {
+    public ExchangeInfo(float current, float prev, String currency, float percent) {
         this.current = current;
         this.prev = prev;
         this.currency = currency;
+        this.percent = percent;
     }
 
     public float getCurrent() {
@@ -44,5 +46,13 @@ public class ExchangeInfo {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public float getPercent() {
+        return percent;
+    }
+
+    public void setPercent(float percent) {
+        this.percent = percent;
     }
 }
